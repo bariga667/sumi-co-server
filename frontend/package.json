@@ -12,6 +12,7 @@
   "dependencies": {
     "@master/css": "^1.37.8",
     "firebase": "^10.14.1",
+    "formik": "^2.4.6",
     "primeicons": "^7.0.0",
     "primeng-sass-theme": "github:primefaces/primeng-sass-theme#17.18.3",
     "primereact": "^10.9.4",
@@ -22,7 +23,8 @@
     "react-router-dom": "^6.23.1",
     "recharts": "^2.15.2",
     "recoil": "^0.7.7",
-    "start": "^5.1.0"
+    "start": "^5.1.0",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

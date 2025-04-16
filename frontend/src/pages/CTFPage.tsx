@@ -36,34 +36,57 @@ export default function CTFPage() {
 
   const handleSubmit = async (levelId: string, correctFlag: string, points: number, nextLevel: number) => {
     const input = answers[levelId]?.trim();
+  
     if (!input) return;
-
-    if (input === correctFlag) {
+  
+    const userRef = doc(db, "users", user!.uid);
+    const snap = await getDoc(userRef);
+    const data = snap.data();
+  
+    const previousHistory = Array.isArray(data?.history) ? data.history : [];
+    const previousAttempts = previousHistory.filter((h: any) => h.level === Number(levelId)).length;
+    const isCorrect = input === correctFlag;
+  
+    if (isCorrect) {
       setStatus((prev) => ({ ...prev, [levelId]: "correct" }));
-
-      const userRef = doc(db, "users", user!.uid);
-      const snap = await getDoc(userRef);
-      const data = snap.data();
-
+  
       const updatedPoints = (data?.points || 0) + points;
       const updatedCompleted = [...(data?.completed || []), Number(levelId)];
-
-      await setDoc(userRef, {
-        ...data,
-        points: updatedPoints,
-        completed: Array.from(new Set(updatedCompleted)),
-        currentLevel: nextLevel,
-      });
-
+  
+      const newEntry = {
+        level: Number(levelId),
+        timestamp: new Date().toISOString(),
+        points: points,
+        totalPoints: updatedPoints,
+        failedAttempts: previousAttempts,
+        category: "CTF"
+      };
+  
+      const updatedHistory = [...previousHistory, newEntry];
+  
+      await setDoc(
+        userRef,
+        {
+          ...data,
+          points: updatedPoints,
+          completed: Array.from(new Set(updatedCompleted)),
+          currentLevel: nextLevel,
+          history: updatedHistory
+        },
+        { merge: true }
+      );
+  
       setUserData((prev: any) => ({
         ...prev,
         points: updatedPoints,
         completed: Array.from(new Set(updatedCompleted)),
+        history: updatedHistory
       }));
     } else {
       setStatus((prev) => ({ ...prev, [levelId]: "wrong" }));
     }
   };
+  
 
   return (
     <div style={{ padding: "40px", fontFamily: "sans-serif", background: "#f8fafc", minHeight: "100vh" }}>

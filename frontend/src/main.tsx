@@ -45,23 +45,7 @@ import SecretFlag88 from "./pages/ctf/SecretFlag88";
 import Level9HiddenField from "./pages/ctf/Level9HiddenField";
 import Level10CookieBypass from "./pages/ctf/Level10CookieBypass";
 
-
-
 import CTFTestWrite from "./pages/ctf/CTFTestWrite";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 moment.locale("ru");
 

@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { getAuth } from "firebase/auth";
+import { useParams, useNavigate } from "react-router-dom";
 import { db } from "../firebase";
+import { getAuth } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export default function CTFLevelPage() {
   const { id } = useParams<{ id: string }>();
   const [level, setLevel] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [flagInput, setFlagInput] = useState("");
   const [status, setStatus] = useState<"idle" | "correct" | "wrong">("idle");
   const [failCount, setFailCount] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLevel = async () => {
@@ -19,17 +21,17 @@ export default function CTFLevelPage() {
       if (snap.exists()) {
         setLevel({ id, ...snap.data() });
       }
+      setLoading(false);
     };
     fetchLevel();
   }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     const trimmed = flagInput.trim();
 
-    console.log("Твой флаг:", trimmed);
-    console.log("Ожидаемый флаг:", level.flag);
-
+    console.log(trimmed, level, level.flag);
 
     if (trimmed === level.flag) {
       setStatus("correct");
@@ -40,76 +42,54 @@ export default function CTFLevelPage() {
 
       const userRef = doc(db, "users", user.uid);
       const snap = await getDoc(userRef);
-
-      // 👇 Устанавливаем начальные значения
-      let prevData = {
-        points: 0,
-        completed: [] as number[],
-        history: [] as object[],
+      const previous = snap.exists() ? snap.data() : {
         currentLevel: 1,
-        uid: user.uid,
-        email: user.email || "",
-        firstName: "",
-        lastName: "",
+        points: 0,
+        completed: [],
+        history: []
       };
 
-      // 👇 Получаем существующие значения (если есть)
-      if (snap.exists()) {
-        const data = snap.data();
-        prevData = {
-          points: data.points || 0,
-          completed: Array.isArray(data.completed) ? data.completed : [],
-          history: Array.isArray(data.history) ? data.history : [],
-          currentLevel: data.currentLevel || 1,
-          uid: user.uid,
-          email: data.email || "",
-          firstName: data.firstName || "",
-          lastName: data.lastName || "",
-        };
-      }
+      const updatedPoints = (previous.points || 0) + (level.points || 0);
+      const updatedCompleted = [...(previous.completed || []), Number(id)];
 
-      const updatedPoints = prevData.points + Number(level.points || 0);
-      const updatedCompleted = [...new Set([...prevData.completed, Number(id)])];
-
-      const newEntry = {
-        level: Number(id),
-        timestamp: new Date().toISOString(),
-        points: Number(level.points),
-        totalPoints: updatedPoints,
-        failedAttempts: failCount,
-        category: level.category || "CTF",
-      };
-
-      const updatedHistory = [...prevData.history, newEntry];
-      console.log("История для записи:", updatedHistory);
-      // 👇 Сохраняем данные в Firebase (включая history!)
-      await setDoc(
-        userRef,
+      const updatedHistory = [
+        ...(Array.isArray(previous.history) ? previous.history : []),
         {
-          uid: user.uid,
-          email: prevData.email,
-          firstName: prevData.firstName,
-          lastName: prevData.lastName,
-          points: updatedPoints,
-          completed: updatedCompleted,
-          currentLevel: level.nextLevel,
-          history: updatedHistory,
-        },
-        { merge: true }
-      );
+          level: Number(id),
+          timestamp: new Date().toISOString(),
+          points: level.points,
+          totalPoints: updatedPoints,
+          failedAttempts: failCount,
+          category: level.category || "CTF"
+        }
+      ];
+
+      console.log(updatedHistory);
+
+      await setDoc(userRef, {
+        ...previous,
+        uid: user.uid,
+        currentLevel: level.nextLevel,
+        points: updatedPoints,
+        completed: Array.from(new Set(updatedCompleted)),
+        history: updatedHistory
+      });
+
+      setTimeout(() => {
+        navigate(`/ctf/${level.nextLevel}`);
+      }, 2000);
     } else {
-      setFailCount((f) => f + 1);
       setStatus("wrong");
+      setFailCount((prev) => prev + 1);
     }
   };
 
-  if (!level) return <p>Загрузка уровня...</p>;
+  if (loading) return <p>Загрузка...</p>;
+  if (!level) return <p>Уровень не найден</p>;
 
   return (
     <div style={{ padding: "40px", maxWidth: "500px", margin: "0 auto" }}>
-      <h2>
-        Уровень {level.id}: {level.title}
-      </h2>
+      <h2>🧩 Уровень {level.id}: {level.title}</h2>
       {level.description && <p>{level.description}</p>}
 
       <form onSubmit={handleSubmit}>
@@ -120,17 +100,11 @@ export default function CTFLevelPage() {
           placeholder="Флаг..."
           style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
         />
-        <button type="submit" style={{ padding: "10px 20px" }}>
-          Проверить
-        </button>
+        <button type="submit" style={{ padding: "10px 20px" }}>Проверить</button>
       </form>
 
-      {status === "correct" && (
-        <p style={{ color: "green" }}>✅ Верно! Прогресс сохранён</p>
-      )}
-      {status === "wrong" && (
-        <p style={{ color: "red" }}>❌ Неверный флаг</p>
-      )}
+      {status === "correct" && <p style={{ color: "green" }}>✅ Верно! Переход к следующему уровню...</p>}
+      {status === "wrong" && <p style={{ color: "red" }}>❌ Неверный флаг</p>}
     </div>
   );
 }

@@ -63,7 +63,7 @@ export const Header: FC = () => {
         src={logoIcon}
         alt="logo"
         className="w:45 h:45 cursor:pointer"
-        onClick={() => navigate(PAGES.DASHBOARD.INDEX)}
+        onClick={() => navigate("/portal")}
       />
 
       <OverlayPanel ref={notificationsOverlayPanel}>
