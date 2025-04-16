@@ -1,0 +1,53 @@
+@import "variables";
+
+@import "primeicons/primeicons.css";
+
+@import "primeng-sass-theme/themes/lara/lara-light/blue/theme.scss";
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+
+  font-size: 16px;
+  color: $fontColor;
+  background: url("/back.jpg") no-repeat;
+  background-size: cover;
+}
+
+.root-main {
+  display: flex;
+  flex: 1;
+}
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+  max-width: 1440px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+.min-h-window-full {
+  min-height: 100vh;
+}
+
+.beautiful-shadow {
+  box-shadow:
+    rgba(0, 0, 0, 0.1) 0px 4px 6px -1px,
+    rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+}

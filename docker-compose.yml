@@ -1,0 +1,8 @@
+services:
+  frontend:
+    build: ./frontend
+    restart: always
+    volumes:
+      - ./nginx/sumico.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
