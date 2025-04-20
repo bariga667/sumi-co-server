@@ -8,7 +8,9 @@ export default function CTFPage() {
   const [levels, setLevels] = useState<any[]>([]);
   const [userData, setUserData] = useState<any>(null);
   const [answers, setAnswers] = useState<{ [key: string]: string }>({});
-  const [status, setStatus] = useState<{ [key: string]: "correct" | "wrong" | null }>({});
+  type FlagStatus = "correct" | "wrong" | "already" | null;
+  const [status, setStatus] = useState<{ [key: string]: FlagStatus }>({});
+
 
   const auth = getAuth();
   const user = auth.currentUser;
@@ -36,34 +38,40 @@ export default function CTFPage() {
 
   const handleSubmit = async (levelId: string, correctFlag: string, points: number, nextLevel: number) => {
     const input = answers[levelId]?.trim();
-  
-    if (!input) return;
-  
-    const userRef = doc(db, "users", user!.uid);
-    const snap = await getDoc(userRef);
-    const data = snap.data();
-  
-    const previousHistory = Array.isArray(data?.history) ? data.history : [];
-    const previousAttempts = previousHistory.filter((h: any) => h.level === Number(levelId)).length;
-    const isCorrect = input === correctFlag;
-  
-    if (isCorrect) {
+
+
+    // 🛑 Проверка: если уже прошёл — прерываем
+    if (userData?.completed?.includes(Number(levelId))) {
+      setStatus((prev) => ({ ...prev, [levelId]: "already" }));
+      return;
+    }
+
+    if (input === correctFlag) {
       setStatus((prev) => ({ ...prev, [levelId]: "correct" }));
-  
+    
+      const userRef = doc(db, "users", user!.uid);
+      const snap = await getDoc(userRef);
+      const data = snap.data();
+    
       const updatedPoints = (data?.points || 0) + points;
       const updatedCompleted = [...(data?.completed || []), Number(levelId)];
-  
+    
+      // 👇 Добавляем новую запись в history
       const newEntry = {
         level: Number(levelId),
         timestamp: new Date().toISOString(),
-        points: points,
+        points,
         totalPoints: updatedPoints,
-        failedAttempts: previousAttempts,
-        category: "CTF"
+        failedAttempts: 0, // пока без счётчика ошибок, можно доработать
+        category: "CTF",
       };
-  
-      const updatedHistory = [...previousHistory, newEntry];
-  
+    
+      const updatedHistory = [
+        ...(Array.isArray(data?.history) ? data.history : []),
+        newEntry,
+      ];
+    
+      // 👇 Обновляем Firestore с history
       await setDoc(
         userRef,
         {
@@ -71,17 +79,19 @@ export default function CTFPage() {
           points: updatedPoints,
           completed: Array.from(new Set(updatedCompleted)),
           currentLevel: nextLevel,
-          history: updatedHistory
+          history: updatedHistory,
         },
-        { merge: true }
+        { merge: true } // важно!
       );
-  
+    
+      // 👇 Обновляем локальное состояние
       setUserData((prev: any) => ({
         ...prev,
         points: updatedPoints,
         completed: Array.from(new Set(updatedCompleted)),
-        history: updatedHistory
+        history: updatedHistory,
       }));
+    
     } else {
       setStatus((prev) => ({ ...prev, [levelId]: "wrong" }));
     }
@@ -149,7 +159,9 @@ export default function CTFPage() {
             {status[level.id] === "wrong" && (
               <p style={{ color: "red", marginTop: "10px" }}>❌ Неверный флаг</p>
             )}
-
+            {status[level.id] === "already" && (
+              <p style={{ color: "gray", marginTop: "10px" }}>⚠️ Вы уже прошли это задание</p>
+            )}
             {isCompleted && !status[level.id] && (
               <p style={{ color: "gray", marginTop: "10px" }}>⚡ Уровень уже пройден</p>
             )}

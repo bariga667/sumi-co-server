@@ -13,9 +13,9 @@ import "./assets/scss/index.scss";
 import { PAGES } from "./constants/pages.ts";
 import { PrivateRoute } from "./PrivateRoute";
 
-import CTFLevelPage from "./pages/CTFLevelPage";
+// import CTFLevelPage from "./pages/CTFLevelPage";
 import CTFPage from "./pages/CTFPage";
-import CTFAdminPage from "./pages/CTFAdminPage";
+// import CTFAdminPage from "./pages/CTFAdminPage";
 import CTFLeaderboardPage from "./pages/CTFLeaderboardPage";
 import CTFUserStatsPage from "./pages/CTFUserStatsPage";
 
@@ -58,18 +58,18 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             element={<StudentAuthRegistrationPage />}
             path={PAGES.AUTH.STUDENT}
           />
-        <Route
+        {/* <Route
          path="/ctf/:id" element={<CTFLevelPage />} 
-        />
+        /> */}
         <Route
          path="/ctf/leaderboard" element={<CTFLeaderboardPage />} 
         />
         <Route
          path="/ctf" element={<CTFPage />} 
         />
-        <Route 
+        {/* <Route 
           path="/ctf/admin" element={<CTFAdminPage />} 
-        />
+        /> */}
         <Route
          path="/ctf/user/:uid" element={<CTFUserStatsPage />} 
         />
