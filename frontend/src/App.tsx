@@ -8,6 +8,12 @@ import { StudentAuthRegistrationPage } from "./pages/students/auth/StudentAuthRe
 import { IndexPage } from "./pages/IndexPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
+import { ChatButtonFixed } from "./components/chat/ChatButtonFixed";
+import { ChatSidebar } from "./components/chat/ChatSidebar";
+import { ref, set } from "firebase/database";
+import { realtimeDb } from "./firebase";
+
+
 
 // ✅ PrivateRoute — защищённый маршрут
 function PrivateRoute({ children }: { children: ReactNode }) {
@@ -30,9 +36,23 @@ function AutoRedirectOnLogin() {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       const currentPath = location.pathname;
 
-      if (user && (currentPath === "/" || currentPath === "/login")) {
-        navigate("/portal");
-      }
+      if (user) {
+        const safeUserEmail = user.email?.split("@")[0] || "default_user";
+      
+        const userRef = ref(realtimeDb, `userInfo/${safeUserEmail}`);
+      
+        set(userRef, {
+          userEmail: user.email || "default_email",
+          userPassword: "default_password",         // ⚠️ только если реально доступен
+          userFullName: user.displayName || "default_name",
+          userPoints: 0,
+          commandID: "cm_123456",                   // или подтягивай откуда надо
+        });
+      
+        if (currentPath === "/" || currentPath === "/login") {
+          navigate("/portal");
+        }
+      }      
     });
 
     return () => unsubscribe();
@@ -40,6 +60,7 @@ function AutoRedirectOnLogin() {
 
   return null;
 }
+
 
   export default function App() {
     return (
@@ -52,6 +73,9 @@ function AutoRedirectOnLogin() {
 
           {/* 👇 Добавляем 404 */}
           <Route path="*" element={<NotFoundPage />} />
+
+          <ChatButtonFixed />
+          <ChatSidebar />
         </Routes>
       </Router>
     );

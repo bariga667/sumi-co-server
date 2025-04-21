@@ -1,8 +1,8 @@
 export interface ChatMessage {
-  id: number;
-  userID: number;
+  id: string;
+  userID: string;
   userName: string;
   body: string;
   createdAt: Date;
-  role: string;
+  role: "User" | "Admin";
 }
