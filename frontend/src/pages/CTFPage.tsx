@@ -94,7 +94,40 @@ export default function CTFPage() {
     
     } else {
       setStatus((prev) => ({ ...prev, [levelId]: "wrong" }));
+    
+      // 👇 Добавляем запись в историю с ошибкой
+      const userRef = doc(db, "users", user!.uid);
+      const snap = await getDoc(userRef);
+      const data = snap.data();
+    
+      const prevHistory = Array.isArray(data?.history) ? data.history : [];
+      const prevAttempts = prevHistory.filter((h: any) => h.level === Number(levelId));
+    
+      const newEntry = {
+        level: Number(levelId),
+        timestamp: new Date().toISOString(),
+        wasCorrect: false,
+        failedAttempts: prevAttempts.length + 1,
+        category: "CTF",
+      };
+    
+      const updatedHistory = [...prevHistory, newEntry];
+    
+      await setDoc(
+        userRef,
+        {
+          ...data,
+          history: updatedHistory,
+        },
+        { merge: true }
+      );
+    
+      setUserData((prev: any) => ({
+        ...prev,
+        history: updatedHistory,
+      }));
     }
+    
   };
   
 
