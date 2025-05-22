@@ -13,25 +13,50 @@ export default function CTFLevelPage() {
   const [failCount, setFailCount] = useState(0);
   const [userData, setUserData] = useState<any>(null);
 
+  // Загрузка задания и данных пользователя
   useEffect(() => {
     (async () => {
       if (!id) return;
-      // Загружаем задание
-      const ref = doc(db, "ctf_levels", id);
-      const snap = await getDoc(ref);
-      if (snap.exists()) setLevel({ id, ...snap.data() });
+      setLoading(true);
 
-      // Загружаем данные пользователя
-      const auth = getAuth();
-      const user = auth.currentUser;
-      if (user) {
-        const userRef = doc(db, "users", user.uid);
-        const usrSnap = await getDoc(userRef);
-        if (usrSnap.exists()) setUserData(usrSnap.data());
+      try {
+        const ref = doc(db, "ctf_levels", id);
+        const snap = await getDoc(ref);
+        if (snap.exists()) setLevel({ id, ...snap.data() });
+        else setLevel(null);
+
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (user) {
+          const userRef = doc(db, "users", user.uid);
+          const usrSnap = await getDoc(userRef);
+          if (usrSnap.exists()) setUserData(usrSnap.data());
+          else setUserData(null);
+        }
+      } catch (error) {
+        console.error("Ошибка при загрузке данных:", error);
+        setLevel(null);
+        setUserData(null);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     })();
   }, [id]);
+
+  // Обновление данных пользователя из Firestore
+  const refreshUserData = async () => {
+    try {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const userRef = doc(db, "users", user.uid);
+      const usrSnap = await getDoc(userRef);
+      if (usrSnap.exists()) setUserData(usrSnap.data());
+    } catch (error) {
+      console.error("Ошибка при обновлении данных пользователя:", error);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,59 +64,60 @@ export default function CTFLevelPage() {
 
     const auth = getAuth();
     const user = auth.currentUser;
-    if (!user) return;
+    if (!user) {
+      alert("Пожалуйста, войдите в систему.");
+      return;
+    }
 
-    // Если уже пройден
     if (userData?.completed?.includes(Number(id))) {
       setStatus("already");
       return;
     }
 
     const trimmed = flagInput.trim();
+
     if (trimmed === level.flag) {
       setStatus("correct");
-      // Добавляем баллы только если уровень ещё не пройден
-      const userRef = doc(db, "users", user.uid);
-      const snap = await getDoc(userRef);
-      const prev = snap.exists() ? snap.data() : {
-        currentLevel: 1,
-        points: 0,
-        completed: [],
-        history: [],
-      };
 
-      const updatedPoints = (prev.points || 0) + (level.points || 0);
-      const updatedCompleted = [...(prev.completed || []), Number(id)];
-      const newHistoryEntry = {
-        level: Number(id),
-        timestamp: new Date().toISOString(),
-        points: level.points,
-        totalPoints: updatedPoints,
-        failedAttempts: failCount,
-        category: level.category || "CTF",
-      };
+      try {
+        const userRef = doc(db, "users", user.uid);
+        const snap = await getDoc(userRef);
+        const prev = snap.exists()
+          ? snap.data()
+          : { currentLevel: 1, points: 0, completed: [], history: [] };
 
-      await setDoc(
-        userRef,
-        {
-          ...prev,
-          uid: user.uid,
-          currentLevel: level.nextLevel,
-          points: updatedPoints,
-          completed: Array.from(new Set(updatedCompleted)),
-          history: [...(prev.history || []), newHistoryEntry],
-        },
-        { merge: true }
-      );
+        const updatedPoints = (prev.points || 0) + (level.points || 0);
+        const updatedCompleted = [...new Set([...(prev.completed || []), Number(id)])];
 
-      // Обновляем локальное состояние
-      setUserData((prev: any) => ({
-        ...prev,
-        points: updatedPoints,
-        completed: Array.from(new Set(updatedCompleted)),
-        history: [...(prev.history || []), newHistoryEntry],
-      }));
+        const newHistoryEntry = {
+          level: Number(id),
+          timestamp: new Date().toISOString(),
+          points: level.points,
+          totalPoints: updatedPoints,
+          failedAttempts: failCount,
+          category: level.category || "CTF",
+        };
 
+        const updatedHistory = [...(prev.history || []), newHistoryEntry];
+
+        await setDoc(
+          userRef,
+          {
+            ...prev,
+            uid: user.uid,
+            currentLevel: level.id,
+            points: updatedPoints,
+            completed: updatedCompleted,
+            history: updatedHistory,
+          },
+          { merge: true }
+        );
+
+        await refreshUserData();
+      } catch (error) {
+        console.error("Ошибка при сохранении прогресса:", error);
+        alert("Ошибка при сохранении результатов. Попробуйте позже.");
+      }
     } else {
       setStatus("wrong");
       setFailCount((c) => c + 1);
@@ -127,15 +153,24 @@ export default function CTFLevelPage() {
         borderTop: `8px solid ${getColor((level.category || "").toLowerCase())}`,
       }}
     >
-      <Link to="/ctf" style={{ color: "#2563eb", textDecoration: "none" }}>← Назад к списку</Link>
-      <h2 style={{ marginTop: 20 }}>🧩 Уровень {level.id}: {level.title}</h2>
-      {level.points && <div style={{ marginBottom: 6, color: "#64748b" }}>Стоимость: {level.points} очк.</div>}
+      <Link to="/ctf" style={{ color: "#2563eb", textDecoration: "none" }}>
+        ← Назад к списку
+      </Link>
+      <h2 style={{ marginTop: 20 }}>
+        🧩 Уровень {level.id}: {level.title}
+      </h2>
+      {level.points && (
+        <div style={{ marginBottom: 6, color: "#64748b" }}>
+          Стоимость: {level.points} очк.
+        </div>
+      )}
       <div style={{ marginBottom: 12, fontStyle: "italic", color: "#64748b" }}>
         {level.category && <>Категория: {level.category}</>}
       </div>
-      {level.description && (<p style={{ marginTop: 0, marginBottom: 18 }}>{level.description}</p>)}
+      {level.description && (
+        <p style={{ marginTop: 0, marginBottom: 18 }}>{level.description}</p>
+      )}
 
-      {/* Кнопка-ссылка на задание */}
       {level.component && (
         <Link
           to={`/ctf/do/${level.component}`}
@@ -155,7 +190,6 @@ export default function CTFLevelPage() {
         </Link>
       )}
 
-      {/* Форма для флага */}
       {!isCompleted && (
         <form onSubmit={handleSubmit} style={{ marginTop: 20 }}>
           <input
@@ -188,21 +222,16 @@ export default function CTFLevelPage() {
         </form>
       )}
 
-      {/* Сообщения об ошибках и успехах */}
-      {status === "correct" && (
-        <p style={{ color: "green", marginTop: 12 }}>
-          ✅ Верно! Уровень пройден.
-        </p>
+      {(status === "correct" || isCompleted) && (
+        <p style={{ color: "green", marginTop: 12 }}>✅ Уровень уже пройден.</p>
       )}
       {status === "wrong" && (
         <p style={{ color: "red", marginTop: 12 }}>
           ❌ Неверный флаг &nbsp;({failCount})
         </p>
       )}
-      {(status === "already" || isCompleted) && (
-        <p style={{ color: "gray", marginTop: 12 }}>
-          ⚡ Уровень уже пройден
-        </p>
+      {status === "already" && (
+        <p style={{ color: "gray", marginTop: 12 }}>⚡ Вы уже проходили этот уровень.</p>
       )}
     </div>
   );

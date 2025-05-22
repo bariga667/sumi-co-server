@@ -48,17 +48,25 @@ export default function CTFPage() {
   };
 
   return (
-    <div style={{ padding: 40, fontFamily: "sans-serif", background: "#f8fafc", minHeight: "100vh" }}>
+    <div
+      style={{
+        padding: 40,
+        fontFamily: "sans-serif",
+        background: "#f8fafc",
+        minHeight: "100vh",
+      }}
+    >
       <h1 style={{ fontSize: 32, marginBottom: 30 }}>🏁 CTF&nbsp;Задания</h1>
 
+      {/* Группы по категориям */}
       {Object.entries(grouped).map(([cat, arr]) => (
         <div key={cat} style={{ marginBottom: 50 }}>
           <h2 style={{ textTransform: "uppercase", marginBottom: 16 }}>{cat}</h2>
-
-          {/* грид квадратиков */}
+          {/* Сетка квадратов */}
           <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
-            {arr.map((lvl) => {
+            {arr.map((lvl, index) => {
               const completed = userData?.completed?.includes(Number(lvl.id));
+              const localNumber = index + 1; // Локальный номер уровня внутри категории
               return (
                 <Link
                   key={lvl.id}
@@ -75,14 +83,35 @@ export default function CTFPage() {
                     alignItems: "center",
                     textDecoration: "none",
                     boxShadow: "0 2px 6px rgba(0,0,0,.15)",
+                    position: "relative",
                   }}
                 >
-                  <div style={{ fontSize: 42, fontWeight: 700 }}>{lvl.id}</div>
-                  <div style={{ fontSize: 13, textAlign: "center", lineHeight: 1.25, padding: "0 4px" }}>
+                  <div style={{ fontSize: 42, fontWeight: 700 }}>{localNumber}</div>
+                  <div
+                    style={{
+                      fontSize: 13,
+                      textAlign: "center",
+                      lineHeight: 1.25,
+                      padding: "0 4px",
+                    }}
+                  >
                     {lvl.title}
                   </div>
                   {completed && (
-                    <div style={{ fontSize: 12, marginTop: 4, color: "#d1fae5" }}>✔</div>
+                    <div
+                      style={{
+                        fontSize: 12,
+                        marginTop: 4,
+                        color: "#d1fae5",
+                        position: "absolute",
+                        bottom: 10,
+                        left: 0,
+                        right: 0,
+                        textAlign: "center",
+                      }}
+                    >
+                      ✔
+                    </div>
                   )}
                 </Link>
               );

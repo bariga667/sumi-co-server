@@ -52,6 +52,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/ctf/leaderboard" element={<CTFLeaderboardPage />} />
         <Route path="/ctf/user/:uid" element={<CTFUserStatsPage />} />
         <Route path="/ctf/do/:component" element={<CTFDoPage />} />
+        {/* <Route path="/ctf/admin" element={<CTFAdminPage />} /> */}
 
         <Route path="/ctf/test-write" element={<CTFTestWrite />}/>
         <Route path="/login" element={<StudentLoginPage />} />

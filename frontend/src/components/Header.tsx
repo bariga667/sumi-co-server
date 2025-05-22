@@ -13,6 +13,8 @@ import { db } from "../firebase";
 import logoIcon from "../assets/svg/logo.svg";
 import { PAGES } from "../constants/pages.ts";
 
+
+
 export const Header: FC = () => {
   const notificationsOverlayPanel = useRef<OverlayPanel | null>(null);
   const navigate = useNavigate();
@@ -27,6 +29,11 @@ export const Header: FC = () => {
       icon: "pi pi-user",
       command: () => navigate(PAGES.DASHBOARD.PROFILE),
     },
+    // {
+    // label: "Админка уровней",     // <--- вот здесь добавляем
+    // icon: "pi pi-cog",
+    // command: () => navigate("/ctf/admin"),
+    // },
     {
       label: "Выйти",
       icon: "pi pi-sign-out",
