@@ -31,7 +31,7 @@ export default function Level9HiddenField() {
         </form>
 
         {flagVisible && (
-          <p style={styles.flag}>{"FLAG{hidden_form_master}"}</p>
+          <p style={styles.flag}>{"sumictf{hidden_form_master}"}</p>
         )}
 
         <p style={{ marginTop: "10px", fontStyle: "italic", fontSize: "13px" }}>

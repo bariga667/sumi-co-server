@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 export default function Level3CookieChallenge() {
   useEffect(() => {
-    document.cookie = "flag=FLAG{cookie_monster}; path=/";
+    document.cookie = "flag=sumictf{cookie_monster}; path=/";
   }, []);
 
   return (

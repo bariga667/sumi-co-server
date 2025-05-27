@@ -3,7 +3,7 @@ export default function SecretFlag88() {
       <div style={styles.container}>
         <div style={styles.card}>
           <h2>🔓 Ты нашёл скрытую страницу!</h2>
-          <p style={styles.flag}>{"FLAG{robots_are_not_safe}"}</p>
+          <p style={styles.flag}>{"sumictf{robots_are_not_safe}"}</p>
         </div>
       </div>
     );

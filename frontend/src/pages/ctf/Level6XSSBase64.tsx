@@ -6,7 +6,7 @@ export default function Level6XSSBase64() {
   useEffect(() => {
     // 👇 Скрываем base64-флаг в глобальной переменной
     (window as any).__hint =
-      "ZmxhZyA9ICJGTEFHe3g4c3NfYmFzZTY0fSI7CiAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2ZsYWcnKS50ZXh0ID0gZmxhZzs=";
+      "VmpJd2VFNUhSa2RqUkZaU1ZrZDRTMVZVUW5kT2JIQkhXVE5vYWxKdGREWldWekI0WWtVd2VWbDZRbHBsYXpWUVYyMTRjMlJHU25WalIwWlhVbTEwTTFkdGVFOVRhelV6VUZRd1BRPT0=";
     console.log("🤫 Загадка где-то в переменных. Попробуй найти `__hint` в console.");
   }, []);
 

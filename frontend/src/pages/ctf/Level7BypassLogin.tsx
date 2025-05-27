@@ -22,7 +22,7 @@ export default function Level7BypassLogin() {
         {loggedIn ? (
           <>
             <h2>🎉 Доступ получен</h2>
-            <p>Флаг: <strong>{"FLAG{login_bypassed}"}</strong>
+            <p>Флаг: <strong>{"sumictf{login_bypassed}"}</strong>
             </p>
           </>
         ) : (

@@ -31,7 +31,7 @@ export default function Level10CookieBypass() {
         </p>
 
         {showFlag ? (
-          <p style={styles.flag}>{"FLAG{cookie_monster_pwn}"}</p>
+          <p style={styles.flag}>{"sumictf{cookie_monster_pwn}"}</p>
         ) : (
           <p style={{ marginTop: "20px", fontStyle: "italic", fontSize: "14px" }}>
             Подсказка: может, в куках что-то интересное? 😉

@@ -1,7 +1,7 @@
 export default function Level1SourceInspect() {
     return (
         <>
-        <div style={{ display: "none" }}>{"FLAG{view_source_123}"}</div>
+        <div style={{ display: "none" }}>{"sumictf{view_source_123}"}</div>
 
 
       

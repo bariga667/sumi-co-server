@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 export default function Level2LocalStorage() {
   useEffect(() => {
-    localStorage.setItem("flag", "FLAG{local_secret_found}");
+    localStorage.setItem("flag", "sumictf{local_secret_found}");
   }, []);
 
   return (

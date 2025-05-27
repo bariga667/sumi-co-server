@@ -4,7 +4,7 @@ export default function Level4ConsoleTrap() {
   useEffect(() => {
     // 👇 создаём функцию вручную в глобальной области
     (window as any).getFlag = () => {
-      return "FLAG{console_wizard}";
+      return "sumictf{console_wizard}";
     };
 
     console.log("%cДобро пожаловать в консоль...", "color: #0ea5e9; font-weight: bold;");
