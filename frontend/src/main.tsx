@@ -34,6 +34,7 @@ import { StudentCourseLessons } from "./pages/students/StudentCourseLessons.tsx"
 import { StudentAuthRegistrationPage } from "./pages/students/auth/StudentAuthRegistrationPage.tsx";
 import CTFTestWrite from "./pages/ctf/CTFTestWrite";
 import CTFDoPage from "./pages/CTFDoPage";
+import SecretFlag88 from './pages/ctf/SecretFlag88.tsx';
 
 
 moment.locale("ru");
@@ -53,6 +54,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/ctf/user/:uid" element={<CTFUserStatsPage />} />
         <Route path="/ctf/do/:component" element={<CTFDoPage />} />
         {/* <Route path="/ctf/admin" element={<CTFAdminPage />} /> */}
+        <Route path="/secret-flag-88" element={<SecretFlag88 />} />
 
         <Route path="/ctf/test-write" element={<CTFTestWrite />}/>
         <Route path="/login" element={<StudentLoginPage />} />

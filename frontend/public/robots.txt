@@ -1,2 +1,6 @@
 User-agent: *
+Disallow: /not-the-flag
+Disallow: /old-admin
+Disallow: /super-secret-88
+Disallow: /useless-page
 Disallow: /secret-flag-88

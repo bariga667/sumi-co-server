@@ -1,72 +1,38 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-const API = "http://localhost:3001"; // Адрес backend
-
-export default function Level5XSSBackend() {
-  const [comments, setComments] = useState([]);
-  const [input, setInput] = useState("");
-  const [msg, setMsg] = useState("");
-
-  // Загрузка комментариев
+export default function LevelXSSUrl() {
   useEffect(() => {
-    fetch(`${API}/comments`, { credentials: "include" })
-      .then(r => r.json())
-      .then(setComments);
+    (window as any).__xssFlag = "sumictf{xss_simple_pwn}";
   }, []);
 
-  // Добавление комментария
-  const addComment = async () => {
-    if (!input) return;
-    const res = await fetch(`${API}/comments`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: input }),
-      credentials: "include"
-    });
-    if (res.ok) {
-      setMsg("Комментарий добавлен!");
-      setInput("");
-      // Перезагрузить комментарии
-      fetch(`${API}/comments`, { credentials: "include" })
-        .then(r => r.json())
-        .then(setComments);
-    } else {
-      setMsg("Ошибка при добавлении");
-    }
-  };
+  const params = new URLSearchParams(window.location.search);
+  const comment = params.get("comment") || "";
+
+  // Проверка на правильный payload (точный или любой XSS)
+  const expected = `<img src=x onerror="alert(window.__xssFlag)">`;
+  const isSolved = comment.trim() === expected;
 
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h2>💉 Level 5: XSS через backend</h2>
+        <h2>🌐 XSS через URL</h2>
         <p>
-          Всё, что ты напишешь, отправится на сервер и будет отрисовано для всех.
-          Попробуй внедрить XSS, чтобы украсть флаг у админа!
+          Всё, что ты укажешь в параметре <code>comment</code> в адресной строке, появится ниже как HTML.
+          <br />
+          <b>Задача:</b> Через XSS получи флаг из <code>window.__xssFlag</code>!
         </p>
-        <input
-          type="text"
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          placeholder="Введи payload..."
-          style={styles.input}
-        />
-        <button style={styles.button} onClick={addComment}>
-          Отправить
-        </button>
         <div style={styles.outputBox}>
-          <p>Комментарии:</p>
-          {comments.map((c, i) => (
-            <div
-              key={i}
-              style={{ borderBottom: "1px solid #eee", margin: "8px 0", padding: "5px" }}
-              dangerouslySetInnerHTML={{ __html: c }}
-            />
-          ))}
+          <p>Результат:</p>
+          {isSolved ? (
+            <div style={{ fontWeight: "bold", color: "#059669", fontSize: 18 }}>
+              Флаг: <code>sumictf&#123;xss_simple_pwn&#125;</code>
+            </div>
+          ) : (
+            <div dangerouslySetInnerHTML={{ __html: comment }} />
+          )}
         </div>
-        <p style={{ color: "#aaa" }}>{msg}</p>
-        <p style={{ marginTop: "10px", fontStyle: "italic", fontSize: "14px" }}>
-          <b>Цель:</b> Флаг доступен только для админа по <code>/flag</code>!<br />
-          Реальный XSS — укради флаг через админ-бота!
+        <p style={{ marginTop: 12, color: "#888" }}>
+          <b>Подсказка:</b> XSS — это не только &lt;script&gt;...
         </p>
       </div>
     </div>
@@ -75,44 +41,26 @@ export default function Level5XSSBackend() {
 
 const styles = {
   container: {
-    height: "100vh",
-    background: "#fef9c3",
+    minHeight: "100vh",
+    background: "#c7f0fe",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
   },
   card: {
     background: "#fff",
-    padding: "30px",
-    borderRadius: "12px",
-    width: "560px",
-    boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
+    padding: 30,
+    borderRadius: 12,
+    width: 540,
+    boxShadow: "0 8px 32px #0001",
     textAlign: "center" as const,
     fontFamily: "sans-serif",
   },
-  input: {
-    width: "100%",
-    padding: "12px",
-    margin: "10px 0",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
-    fontSize: "14px",
-  },
-  button: {
-    padding: "10px 20px",
-    borderRadius: "8px",
-    background: "#fee440",
-    border: "none",
-    fontWeight: "bold",
-    marginBottom: "10px",
-    cursor: "pointer",
-  },
   outputBox: {
-    marginTop: "20px",
+    marginTop: 18,
     background: "#f3f4f6",
-    padding: "10px",
-    borderRadius: "8px",
-    minHeight: "60px",
-    textAlign: "left" as const
+    padding: 10,
+    borderRadius: 8,
+    minHeight: 60,
   },
 };
