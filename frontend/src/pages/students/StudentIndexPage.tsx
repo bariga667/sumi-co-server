@@ -8,22 +8,25 @@ import Kurs from "../../assets/svg/online_course_separate.png";
 import mentor from "../../assets/svg/mentor_schedule_separate.png";
 import CTF from "../../assets/svg/Ctf_Platform.png";
 import Board from "../../assets/svg/Lyder_Board.png";
+import FixBug_4 from "../../assets/svg/FixBug_4.png";
+import Support_5 from "../../assets/svg/Support_5.png";
+import Like_6 from "../../assets/svg/Like_6.png";
 
 export const StudentIndexPage: FC = () => {
   const navigate = useNavigate();
 
   const progressesItems = [
     {
-      label: "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
-      imageUrl: "https://placehold.co/65",
+      label: "Проверка работоспособности и устранение ошибок.",
+      imageUrl: FixBug_4,
     },
     {
-      label: "Consectetur adipisicing elit.",
-      imageUrl: "https://placehold.co/65",
+      label: "Выпуск приложения в продакшен и обеспечение технической поддержки.",
+      imageUrl: Support_5,
     },
     {
-      label: "Solor sit amet, consectetur adipisicing",
-      imageUrl: "https://placehold.co/65",
+      label: "Сбор отзывов от пользователей для улучшения приложения.",
+      imageUrl: Like_6,
     },
   ];
 
