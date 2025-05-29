@@ -10,7 +10,7 @@ export const userRecoilState = atom<IUser>({
     lastName: "Бәкір",
     firstName: "Бинұр",
     surname: "Қанатұлы",
-    role: UserRole.Student,
+    role: UserRole.Admin,
     telegramUsername: "Binur",
     discordUsername: "Binur#0500",
     commandId: 4560,

@@ -2,22 +2,39 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../../firebase";
+import { useSetRecoilState } from "recoil";
+import { userRecoilState } from "../../../recoils/user";
+import { firestoreToUser } from "../../../types/user";
+import { PAGES } from "../../../constants/pages";
 
 export default function StudentLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const setUser = useSetRecoilState(userRecoilState);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate("/portal");
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Читаем профиль пользователя из Firestore
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        setUser(firestoreToUser(userSnap.data(), Date.now()));
+      }
+
+      navigate(PAGES.DASHBOARD.PORTAL);
     } catch (err: any) {
       setError(err.message);
     }
   };
+
 
   return (
     <div style={styles.container}>

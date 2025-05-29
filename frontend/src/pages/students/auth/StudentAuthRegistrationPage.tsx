@@ -1,13 +1,19 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebase";
 import { useNavigate } from "react-router-dom";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebase";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useSetRecoilState } from "recoil";
+import { userRecoilState } from "../../../recoils/user";
+import { IUser, UserRole, firestoreToUser } from "../../../types/user";
+import { PAGES } from "../../../constants/pages";
+
 
 export const StudentAuthRegistrationPage = () => {
   const navigate = useNavigate();
+  const setUser = useSetRecoilState(userRecoilState);
 
   const formik = useFormik({
     initialValues: {
@@ -23,21 +29,39 @@ export const StudentAuthRegistrationPage = () => {
       lastName: Yup.string().min(1).max(255).required()
     }),
     onSubmit: async () => {
+      // 1. Создаём пользователя в Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, formik.values.email, formik.values.password);
       const user = userCredential.user;
-  
-      await setDoc(doc(db, "users", user.uid), {
-        uid: user.uid,
-        email: formik.values.email,
-        firstName: formik.values.firstName,
+
+      // 2. Готовим объект IUser (заполняй как нужно)
+      const newUser: IUser = {
+        id: Date.now(), // либо другой способ уникального id
+        ssoUserId: 0,
         lastName: formik.values.lastName,
-        currentLevel: 1,
+        firstName: formik.values.firstName,
+        surname: "",
         points: 0,
-        completed: [],
-        history: []
-      });
-  
-      navigate("/portal");
+        telegramUsername: "",
+        discordUsername: "",
+        commandId: 0,
+        commandName: "",
+        direction: 0,
+        raining: 0,
+        role: UserRole.Student,
+        // можешь добавить email или другие поля если надо
+      };
+
+      // 3. Записываем в Firestore
+      await setDoc(doc(db, "users", user.uid), newUser);
+
+      // 4. Читаем обратно из Firestore (на всякий случай) и кладём в Recoil-atom через мэппер
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        setUser(firestoreToUser(userSnap.data(), Date.now()));
+      }
+
+      navigate(PAGES.DASHBOARD.PORTAL);
     },
   });
 

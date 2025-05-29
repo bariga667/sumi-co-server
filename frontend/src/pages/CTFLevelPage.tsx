@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { db } from "../firebase";
 import { getAuth } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { PAGES } from "../constants/pages";
 
 export default function CTFLevelPage() {
   const { id } = useParams<{ id: string }>();
@@ -153,7 +154,7 @@ export default function CTFLevelPage() {
         borderTop: `8px solid ${getColor((level.category || "").toLowerCase())}`,
       }}
     >
-      <Link to="/ctf" style={{ color: "#2563eb", textDecoration: "none" }}>
+      <Link to={PAGES.CTF.INDEX} style={{ color: "#2563eb", textDecoration: "none" }}>
         ← Назад к списку
       </Link>
       <h2 style={{ marginTop: 20 }}>

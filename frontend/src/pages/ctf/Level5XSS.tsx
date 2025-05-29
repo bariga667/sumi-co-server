@@ -13,7 +13,7 @@ export default function LevelXSSUrl() {
   const isSolved = comment.trim() === expected;
 
   return (
-    <div style={styles.container}>
+    <div className="fullscreen-task">
       <div style={styles.card}>
         <h2>🌐 XSS через URL</h2>
         <p>
@@ -40,18 +40,12 @@ export default function LevelXSSUrl() {
 }
 
 const styles = {
-  container: {
-    minHeight: "100vh",
-    background: "#c7f0fe",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
   card: {
     background: "#fff",
     padding: 30,
     borderRadius: 12,
     width: 540,
+    maxWidth: "95vw",
     boxShadow: "0 8px 32px #0001",
     textAlign: "center" as const,
     fontFamily: "sans-serif",

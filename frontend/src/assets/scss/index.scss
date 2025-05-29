@@ -10,15 +10,55 @@
   box-sizing: border-box;
 }
 
-body {
+/* Глобально на всю страницу */
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  min-height: 100vh;
+  min-width: 100vw;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
 
+body {
   font-size: 16px;
-  color: $fontColor;
-  background: url("/back.jpg") no-repeat;
+  color: $fontColor; /* если используешь переменные */
   background-size: cover;
 }
+
+.fullscreen-task {
+  min-height: 100vh;
+  min-width: 100vw;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.course-card__image {
+  width: 120px;
+  height: 120px;
+  max-width: 120px;
+  max-height: 120px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  background: #fff;
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px #0001;
+  overflow: hidden; // <-- добавь, если вдруг что-то выходит за рамки
+}
+
+.lesson-image--70 {
+  width: 70% !important;
+  height: auto !important;
+  display: block;
+  margin: 0 auto;
+}
+
 
 .root-main {
   display: flex;

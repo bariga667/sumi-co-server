@@ -9,10 +9,8 @@ import "moment/dist/locale/ru";
 import "@master/css";
 
 import "./assets/scss/index.scss";
-
 import { PAGES } from "./constants/pages.ts";
-import { PrivateRoute } from "./PrivateRoute";
-
+// import { PrivateRoute } from "./PrivateRoute";
 import CTFLevelPage from "./pages/CTFLevelPage";
 import CTFPage from "./pages/CTFPage";
 // import CTFAdminPage from "./pages/CTFAdminPage";
@@ -44,62 +42,34 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <RecoilRoot>
       <BrowserRouter>
         <Routes>
-        <Route
-            element={<StudentAuthRegistrationPage />}
-            path={PAGES.AUTH.STUDENT}
-          />
-        <Route path="/ctf/levels/:id" element={<CTFLevelPage />} />
-        <Route path="/ctf" element={<CTFPage />} />
-        <Route path="/ctf/leaderboard" element={<CTFLeaderboardPage />} />
-        <Route path="/ctf/user/:uid" element={<CTFUserStatsPage />} />
-        <Route path="/ctf/do/:component" element={<CTFDoPage />} />
-        {/* <Route path="/ctf/admin" element={<CTFAdminPage />} /> */}
-        <Route path="/secret-flag-88" element={<SecretFlag88 />} />
+          <Route element={<StudentAuthRegistrationPage />}path={PAGES.AUTH.STUDENT}/>
+            <Route path={PAGES.CTF.LEVEL} element={<CTFLevelPage />} />
+            <Route path={PAGES.CTF.INDEX} element={<CTFPage />} />
+            <Route path={PAGES.CTF.LEADERBOARD} element={<CTFLeaderboardPage />} />
+            <Route path={PAGES.CTF.USER_STATS} element={<CTFUserStatsPage />} />
+            <Route path={PAGES.CTF.DO} element={<CTFDoPage />} />
+            {/* <Route path={PAGES.CTF.ADMIN} element={<CTFAdminPage />} /> */}
+            <Route path={PAGES.CTF.SECRET_FLAG} element={<SecretFlag88 />} />
+            <Route path={PAGES.CTF.TEST_WRITE} element={<CTFTestWrite />} />
+            <Route path="/login" element={<StudentLoginPage />} />
+            <Route element={<AppLayout />}>
+            <Route path={PAGES.DASHBOARD.PORTAL} element={<IndexPage />} />
+            <Route path={PAGES.DASHBOARD.PROFILE} element={<ProfilePage />} />
+            <Route path={PAGES.DASHBOARD.PROFILE}element={<ProfilePage />}/>
 
-        <Route path="/ctf/test-write" element={<CTFTestWrite />}/>
-        <Route path="/login" element={<StudentLoginPage />} />
-        <Route element={<AppLayout />}>
-        <Route path="/portal" element={<IndexPage />} />
-        <Route path="/portal" element={<PrivateRoute><IndexPage /></PrivateRoute>}/>
-          
-            
 
-            <Route
-              path={PAGES.DASHBOARD.PROFILE}
-              element={<ProfilePage />}
-            />
             <Route path={PAGES.DASHBOARD.STUDENTS.INDEX}>
-              <Route
-                path={PAGES.DASHBOARD.STUDENTS.COURSES}
-                element={<StudentCoursesPage />}
-              />
-              <Route
-                path={PAGES.DASHBOARD.STUDENTS.COURSE_LESSONS}
-                element={<StudentCourseLessons />}
-              />
-              <Route
-                path={PAGES.DASHBOARD.STUDENTS.SCHEDULES}
-                element={<StudentSchedulesPage />}
-              />
-              <Route
-                path={PAGES.DASHBOARD.STUDENTS.PROGRESS}
-                element={<StudentProgressPage />}
-              />
-              <Route
-                path={PAGES.DASHBOARD.STUDENTS.COMPETITIONS}
-                element={<StudentCompetitionsPage />}
-              />
-            </Route>
+              <Route path={PAGES.DASHBOARD.STUDENTS.COURSES}element={<StudentCoursesPage />}/>          
+              <Route path={PAGES.DASHBOARD.STUDENTS.COURSE_LESSONS}element={<StudentCourseLessons />}/>             
+              <Route path={PAGES.DASHBOARD.STUDENTS.SCHEDULES}element={<StudentSchedulesPage />}/>
+              <Route path={PAGES.DASHBOARD.STUDENTS.PROGRESS}element={<StudentProgressPage />}/>             
+              <Route path={PAGES.DASHBOARD.STUDENTS.COMPETITIONS}element={<StudentCompetitionsPage />}/>
+             </Route>
             <Route path={PAGES.DASHBOARD.COURSES.INDEX}>
-              <Route
-                path={PAGES.DASHBOARD.COURSES.MENTOR}
-                element={<StudentMentorCoursesPage />}
-              />
-              <Route
-                path={PAGES.DASHBOARD.COURSES.SINGLE_COURSES}
-                element={<StudentSingleCoursesPage />}
-              />
+              <Route path={PAGES.DASHBOARD.COURSES.MENTOR}element={<StudentMentorCoursesPage />}/>              
+              <Route path={PAGES.DASHBOARD.COURSES.SINGLE_COURSES}element={<StudentSingleCoursesPage />}/>             
             </Route>
+
           </Route>
         </Routes>
       </BrowserRouter>
