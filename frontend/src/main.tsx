@@ -33,6 +33,10 @@ import { StudentAuthRegistrationPage } from "./pages/students/auth/StudentAuthRe
 import CTFTestWrite from "./pages/ctf/CTFTestWrite";
 import CTFDoPage from "./pages/CTFDoPage";
 import SecretFlag88 from './pages/ctf/SecretFlag88.tsx';
+import StudentForgotPasswordPage from "./pages/students/auth/StudentForgotPasswordPage";
+// ...
+
+
 
 
 moment.locale("ru");
@@ -48,15 +52,16 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Route path={PAGES.CTF.LEADERBOARD} element={<CTFLeaderboardPage />} />
             <Route path={PAGES.CTF.USER_STATS} element={<CTFUserStatsPage />} />
             <Route path={PAGES.CTF.DO} element={<CTFDoPage />} />
+            <Route path="/login" element={<StudentLoginPage />} />
             {/* <Route path={PAGES.CTF.ADMIN} element={<CTFAdminPage />} /> */}
             <Route path={PAGES.CTF.SECRET_FLAG} element={<SecretFlag88 />} />
             <Route path={PAGES.CTF.TEST_WRITE} element={<CTFTestWrite />} />
-            <Route path="/login" element={<StudentLoginPage />} />
+            <Route path="/forgot-password" element={<StudentForgotPasswordPage />} />
+
             <Route element={<AppLayout />}>
             <Route path={PAGES.DASHBOARD.PORTAL} element={<IndexPage />} />
             <Route path={PAGES.DASHBOARD.PROFILE} element={<ProfilePage />} />
             <Route path={PAGES.DASHBOARD.PROFILE}element={<ProfilePage />}/>
-
 
             <Route path={PAGES.DASHBOARD.STUDENTS.INDEX}>
               <Route path={PAGES.DASHBOARD.STUDENTS.COURSES}element={<StudentCoursesPage />}/>          

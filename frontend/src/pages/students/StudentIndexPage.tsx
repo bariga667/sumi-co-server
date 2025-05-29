@@ -4,6 +4,10 @@ import { Button } from "primereact/button";
 
 import { INavigationButton } from "../../types/pages";
 import { PAGES } from "../../constants/pages.ts";
+import Kurs from "../../assets/svg/online_course_separate.png";
+import mentor from "../../assets/svg/mentor_schedule_separate.png";
+import CTF from "../../assets/svg/Ctf_Platform.png";
+import Board from "../../assets/svg/Lyder_Board.png";
 
 export const StudentIndexPage: FC = () => {
   const navigate = useNavigate();
@@ -30,9 +34,9 @@ export const StudentIndexPage: FC = () => {
         {
           title: "Курс",
           descriptions:
-            "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut doloremque dolores illo nobis nulla quae tenetur.",
+            "Данный раздел предназначен для самостоятельного изучения ключевых тем курса. Здесь вы найдете видеоуроки, полезные материалы и интерактивные задания для практики. Осваивайте новые навыки в удобном для вас темпе и отслеживайте свой прогресс прямо в системе.",
           link: PAGES.DASHBOARD.STUDENTS.COURSES,
-          imageUrl: "https://placehold.co/160",
+          imageUrl: Kurs,
           imageAlt: "",
         },
       ],
@@ -43,9 +47,9 @@ export const StudentIndexPage: FC = () => {
         {
           title: "Запись",
           descriptions:
-            "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut doloremque dolores illo nobis nulla quae tenetur.",
+            "В этом разделе вы можете выбрать удобное время и записаться на индивидуальную консультацию с ментором. Получите ответы на вопросы, разберите сложные темы и получите ценные рекомендации для успешного обучения. Бронирование занимает всего пару кликов!",
           link: PAGES.DASHBOARD.COURSES.SINGLE_COURSES,
-          imageUrl: "https://placehold.co/160",
+          imageUrl: mentor,
           imageAlt: "",
         },
       ],
@@ -58,7 +62,7 @@ export const StudentIndexPage: FC = () => {
           descriptions:
             "Соревнуйся, взламывай, находи флаги и получай очки! С каждым этапом всё сложнее.",
           link: "/ctf",
-          imageUrl: "https://placehold.co/160x80?text=SUMICTF",
+          imageUrl: CTF,
           imageAlt: "CTF Logo",
         },
         {
@@ -66,7 +70,7 @@ export const StudentIndexPage: FC = () => {
           descriptions:
             "Смотри, кто в топе! Увидь свой прогресс и сравнивай очки с другими участниками.",
           link: "/ctf/leaderboard",
-          imageUrl: "https://placehold.co/160x80?text=Rating",
+          imageUrl: Board,
           imageAlt: "Leaderboard",
         },
       ],
@@ -97,7 +101,7 @@ export const StudentIndexPage: FC = () => {
                       <img
                         src={item.imageUrl}
                         alt={item.imageAlt}
-                        className="w:160 h:160"
+                        className="w:135 h:160"
                       />
                     </div>
 
