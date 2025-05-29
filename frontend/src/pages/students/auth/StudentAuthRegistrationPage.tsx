@@ -10,7 +10,6 @@ import { userRecoilState } from "../../../recoils/user";
 import { IUser, UserRole, firestoreToUser } from "../../../types/user";
 import { PAGES } from "../../../constants/pages";
 
-
 export const StudentAuthRegistrationPage = () => {
   const navigate = useNavigate();
   const setUser = useSetRecoilState(userRecoilState);
@@ -23,45 +22,54 @@ export const StudentAuthRegistrationPage = () => {
       lastName: ""
     },
     validationSchema: Yup.object({
-      email: Yup.string().email().required(),
-      password: Yup.string().min(6).max(255).required(),
-      firstName: Yup.string().min(1).max(255).required(),
-      lastName: Yup.string().min(1).max(255).required()
+      email: Yup.string().email("Введите корректный email").required("Email обязателен"),
+      password: Yup.string().min(6, "Минимум 6 символов").max(255, "Максимум 255 символов").required("Пароль обязателен"),
+      firstName: Yup.string().min(1, "Имя обязательно").max(255, "Максимум 255 символов").required("Имя обязательно"),
+      lastName: Yup.string().min(1, "Фамилия обязательна").max(255, "Максимум 255 символов").required("Фамилия обязательна")
     }),
     onSubmit: async () => {
-      // 1. Создаём пользователя в Firebase Auth
-      const userCredential = await createUserWithEmailAndPassword(auth, formik.values.email, formik.values.password);
-      const user = userCredential.user;
+      try {
+        // 1. Создаём пользователя в Firebase Auth
+        const userCredential = await createUserWithEmailAndPassword(auth, formik.values.email, formik.values.password);
+        const user = userCredential.user;
 
-      // 2. Готовим объект IUser (заполняй как нужно)
-      const newUser: IUser = {
-        id: Date.now(), // либо другой способ уникального id
-        ssoUserId: 0,
-        lastName: formik.values.lastName,
-        firstName: formik.values.firstName,
-        surname: "",
-        points: 0,
-        telegramUsername: "",
-        discordUsername: "",
-        commandId: 0,
-        commandName: "",
-        direction: 0,
-        raining: 0,
-        role: UserRole.Student,
-        // можешь добавить email или другие поля если надо
-      };
+        // 2. Готовим объект IUser (заполняй как нужно)
+        const newUser: IUser = {
+          id: Date.now(),
+          ssoUserId: 0,
+          lastName: formik.values.lastName,
+          firstName: formik.values.firstName,
+          surname: "",
+          points: 0,
+          telegramUsername: "",
+          discordUsername: "",
+          commandId: 0,
+          commandName: "",
+          direction: 0,
+          raining: 0,
+          role: UserRole.Student,
+          // добавь email если нужно
+        };
 
-      // 3. Записываем в Firestore
-      await setDoc(doc(db, "users", user.uid), newUser);
+        // 3. Записываем в Firestore
+        await setDoc(doc(db, "users", user.uid), newUser);
 
-      // 4. Читаем обратно из Firestore (на всякий случай) и кладём в Recoil-atom через мэппер
-      const userRef = doc(db, "users", user.uid);
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        setUser(firestoreToUser(userSnap.data(), Date.now()));
+        // 4. Читаем обратно из Firestore (на всякий случай) и кладём в Recoil-atom через мэппер
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          setUser(firestoreToUser(userSnap.data(), Date.now()));
+        }
+
+        navigate(PAGES.DASHBOARD.PORTAL);
+      } catch (error: any) {
+        // Тут отлавливаем ошибку, если почта уже используется
+        if (error.code === "auth/email-already-in-use") {
+          formik.setFieldError("email", "Почта уже занята");
+        } else {
+          alert("Ошибка регистрации: " + error.message);
+        }
       }
-
-      navigate(PAGES.DASHBOARD.PORTAL);
     },
   });
 
@@ -69,7 +77,6 @@ export const StudentAuthRegistrationPage = () => {
     <div style={styles.container}>
       <div style={styles.card}>
         <h2 style={styles.title}>Регистрация</h2>
-        
         <form onSubmit={formik.handleSubmit}>
           <input
             name="firstName"
@@ -80,6 +87,9 @@ export const StudentAuthRegistrationPage = () => {
             style={styles.input}
             required
           />
+          {formik.touched.firstName && formik.errors.firstName && (
+            <div style={{ color: 'red', fontSize: 13, marginBottom: 8 }}>{formik.errors.firstName}</div>
+          )}
 
           <input
             name="lastName"
@@ -90,6 +100,9 @@ export const StudentAuthRegistrationPage = () => {
             style={styles.input}
             required
           />
+          {formik.touched.lastName && formik.errors.lastName && (
+            <div style={{ color: 'red', fontSize: 13, marginBottom: 8 }}>{formik.errors.lastName}</div>
+          )}
 
           <input
             name="email"
@@ -100,7 +113,10 @@ export const StudentAuthRegistrationPage = () => {
             style={styles.input}
             required
           />
-          
+          {formik.touched.email && formik.errors.email && (
+            <div style={{ color: 'red', fontSize: 13, marginBottom: 8 }}>{formik.errors.email}</div>
+          )}
+
           <input
             name="password"
             type="password"
@@ -110,11 +126,14 @@ export const StudentAuthRegistrationPage = () => {
             style={styles.input}
             required
           />
+          {formik.touched.password && formik.errors.password && (
+            <div style={{ color: 'red', fontSize: 13, marginBottom: 8 }}>{formik.errors.password}</div>
+          )}
 
           <button type="submit" style={styles.button}>
             Зарегистрироваться
           </button>
-          
+
           <p style={{ marginTop: "20px", fontSize: "14px" }}>
             Уже есть аккаунт?{" "}
             <span

@@ -1,6 +1,7 @@
 export const PAGES = {
   AUTH: {
     STUDENT: "/",
+    FORGOT: "/forgot-password",
     STUDENT_THANKS: "/auth/student-thanks",
   },
   CTF: {

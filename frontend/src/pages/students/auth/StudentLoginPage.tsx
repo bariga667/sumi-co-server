@@ -72,6 +72,14 @@ export default function StudentLoginPage() {
             Зарегистрироваться
           </span>
         </p>
+        <p style={{ marginTop: "12px" }}>
+          <span
+            style={{ color: "#2563eb", cursor: "pointer", textDecoration: "underline" }}
+            onClick={() => navigate("/forgot-password")}
+          >
+            Забыли пароль?
+          </span>
+        </p>
       </div>
     </div>
   );
