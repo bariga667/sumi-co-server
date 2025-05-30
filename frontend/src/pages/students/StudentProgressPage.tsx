@@ -1,12 +1,12 @@
 import { FC } from "react";
-import Start_1 from "../../assets/svg/Start_1.png";
-import Design_2 from "../../assets/svg/Design_2.png";
-import Function_3 from "../../assets/svg/Function_3.png";
-import FixBug_4 from "../../assets/svg/FixBug_4.png";
-import Support_5 from "../../assets/svg/Support_5.png";
-import Like_6 from "../../assets/svg/Like_6.png";
-import Update_7 from "../../assets/svg/Update_7.png";
-import Last from "../../assets/svg/Last.png";
+import Start_1 from "../../assets/svg/Start_1-min.png";
+import Design_2 from "../../assets/svg/Design_2-min.png";
+import Function_3 from "../../assets/svg/Function_3-min.png";
+import FixBug_4 from "../../assets/svg/FixBug_4-min.png";
+import Support_5 from "../../assets/svg/Support_5-min.png";
+import Like_6 from "../../assets/svg/Like_6-min.png";
+import Update_7 from "../../assets/svg/Update_7-min.png";
+import Last from "../../assets/svg/Last-min.png";
 
 export interface ProgressItem {
   id: number;

@@ -3,7 +3,7 @@ import { db } from "../firebase";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { Link } from "react-router-dom";
-import { PAGES } from "../constants/pages";
+// import { PAGES } from "../constants/pages";
 
 export default function CTFPage() {
   const [levels, setLevels] = useState<any[]>([]);
