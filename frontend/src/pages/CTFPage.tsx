@@ -57,7 +57,30 @@ export default function CTFPage() {
         minHeight: "100vh",
       }}
     >
-      <h1 style={{ fontSize: 32, marginBottom: 30 }}>🏁 CTF&nbsp;Задания</h1>
+      <h1 style={{ fontSize: 32, marginBottom: 30, display: "flex", alignItems: "center" }}>
+  <Link
+    to="/portal"
+    style={{
+      textDecoration: "none",
+      color: "#2563eb",
+      cursor: "pointer",
+      display: "inline-block",
+      transition: "color 0.18s, transform 0.18s"
+    }}
+    onMouseOver={e => {
+      e.currentTarget.style.color = "#1e40af";
+      e.currentTarget.style.transform = "scale(1.18)";
+    }}
+    onMouseOut={e => {
+      e.currentTarget.style.color = "#2563eb";
+      e.currentTarget.style.transform = "scale(1)";
+    }}
+    title="На главный экран"
+  >
+    🏁
+  </Link>
+  &nbsp;CTF Задания
+</h1>
 
       {/* Группы по категориям */}
       {Object.entries(grouped).map(([cat, arr]) => (

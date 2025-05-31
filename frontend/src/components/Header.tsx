@@ -69,7 +69,7 @@ export const Header: FC = () => {
       <img
         src={logoIcon}
         alt="logo"
-        className="w:70 h:70 cursor:pointer"
+        className="w:55 h:55 logo-hover"
         onClick={() => navigate(PAGES.DASHBOARD.PORTAL)}
       />
 
