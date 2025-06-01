@@ -10,7 +10,7 @@ import "@master/css";
 
 import "./assets/scss/index.scss";
 import { PAGES } from "./constants/pages.ts";
-// import { PrivateRoute } from "./PrivateRoute";
+import { PrivateRoute } from "./PrivateRoute";
 import CTFLevelPage from "./pages/CTFLevelPage";
 import CTFPage from "./pages/CTFPage";
 // import CTFAdminPage from "./pages/CTFAdminPage";
@@ -60,6 +60,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 
             <Route element={<AppLayout />}>
             <Route path={PAGES.DASHBOARD.PORTAL} element={<IndexPage />} />
+            <Route path={PAGES.DASHBOARD.PORTAL} element={<PrivateRoute><IndexPage /></PrivateRoute>}/>
             <Route path={PAGES.DASHBOARD.PROFILE} element={<ProfilePage />} />
             <Route path={PAGES.DASHBOARD.PROFILE}element={<ProfilePage />}/>
 

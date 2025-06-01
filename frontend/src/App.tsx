@@ -12,6 +12,7 @@ import { ChatButtonFixed } from "./components/chat/ChatButtonFixed";
 import { ChatSidebar } from "./components/chat/ChatSidebar";
 import { ref, set } from "firebase/database";
 import { realtimeDb } from "./firebase";
+import { useSyncUser } from "./hooks/useSyncUser";
 
 
 
@@ -63,6 +64,10 @@ function AutoRedirectOnLogin() {
 
 
   export default function App() {
+    const loading = useSyncUser();
+    if (loading) {
+    return <div>Загрузка...</div>; // глобальный спиннер или заставка
+  }
     return (
       <Router>
         <AutoRedirectOnLogin /> {/* 🔁 слушаем и редиректим */}

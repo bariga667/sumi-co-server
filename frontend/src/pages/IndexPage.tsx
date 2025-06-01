@@ -1,17 +1,20 @@
 import { FC } from "react";
-import { useRecoilState } from "recoil";
-
-import { UserRole } from "../types/user.ts";
-import { userRecoilState } from "../recoils/user.ts";
-
-import { StudentIndexPage } from "./students/StudentIndexPage.tsx";
+import { useRecoilValue } from "recoil";
+import { UserRole } from "../types/user";
+import { userRecoilState } from "../recoils/user";
+import { StudentIndexPage } from "./students/StudentIndexPage";
 
 export const IndexPage: FC = () => {
-  const [user] = useRecoilState(userRecoilState);
+  const user = useRecoilValue(userRecoilState);
+
+  if (user === null) {
+    // Пока профиль загружается или пользователь не авторизован
+    return <div>Загрузка профиля...</div>;
+  }
 
   if (user.role === UserRole.Student) {
     return <StudentIndexPage />;
   }
 
-  return <div>Если вы видите это, то прозошло какая то ошибка!</div>;
+  return <div>Если вы видите это, то произошла какая-то ошибка!</div>;
 };
