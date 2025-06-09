@@ -22,7 +22,7 @@ export function StudentSingleCoursesPage() {
       onlineCount: 15,
       address: "ГУГ 1024",
       isOnline: false,
-      date: "2021-20-16 14:12",
+      date: "2025-09-25 14:10",
     },
     {
       id: 2,
@@ -31,7 +31,7 @@ export function StudentSingleCoursesPage() {
       onlineCount: 10000,
       address: "-",
       isOnline: true,
-      date: "2021-20-16 14:12",
+      date: "2025-09-25 14:10",
     },
     {
       id: 3,
@@ -40,7 +40,7 @@ export function StudentSingleCoursesPage() {
       address: "ГУГ 1024",
       isOnline: false,
       onlineCount: 90,
-      date: "2021-20-16 14:12",
+      date: "2025-09-25 14:10",
     },
     {
       id: 4,
@@ -49,7 +49,7 @@ export function StudentSingleCoursesPage() {
       address: "-",
       isOnline: true,
       onlineCount: 13,
-      date: "2021-20-16 14:12",
+      date: "2025-09-25 14:10",
     },
     {
       id: 5,
@@ -58,7 +58,7 @@ export function StudentSingleCoursesPage() {
       onlineCount: 9,
       address: "-",
       isOnline: true,
-      date: "2021-20-16 14:12",
+      date: "2025-09-25 14:10",
     },
   ]);
 

@@ -7,6 +7,7 @@ import { StudentIndexPage } from "./students/StudentIndexPage";
 export const IndexPage: FC = () => {
   const user = useRecoilValue(userRecoilState);
 
+  // Проверка на null перед использованием данных пользователя
   if (user === null) {
     // Пока профиль загружается или пользователь не авторизован
     return <div>Загрузка профиля...</div>;

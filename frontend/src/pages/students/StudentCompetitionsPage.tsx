@@ -121,7 +121,7 @@ export const StudentCompetitionsPage: FC = () => {
           </label>
           <InputText
             id="username"
-            value={user.commandName}
+            value={user ? user.commandName : ''}
             placeholder="Названия команды"
           />
         </FloatLabel>

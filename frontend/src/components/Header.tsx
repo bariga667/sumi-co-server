@@ -1,19 +1,15 @@
 import { FC, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Avatar } from "primereact/avatar";
-// import { Badge } from "primereact/badge";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { MenuItem } from "primereact/menuitem";
 import { Menu } from "primereact/menu";
 
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
-
 import logoIcon from "../assets/svg/logo.svg";
 import { PAGES } from "../constants/pages.ts";
-
-
 
 export const Header: FC = () => {
   const notificationsOverlayPanel = useRef<OverlayPanel | null>(null);
@@ -22,6 +18,32 @@ export const Header: FC = () => {
 
   const [userName, setUserName] = useState("Загрузка...");
   const [points, setPoints] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true); // добавим явную загрузку
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        setUserName("Не авторизован");
+        setPoints(null);
+        setLoading(false);
+        return;
+      }
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const data = userSnap.data();
+        setUserName(`${data.lastName} ${data.firstName[0]}.`);
+        setPoints(data.points || 0);
+      } else {
+        setUserName("Нет данных");
+        setPoints(null);
+      }
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const avatarMenuItems: MenuItem[] = [
     {
@@ -29,11 +51,6 @@ export const Header: FC = () => {
       icon: "pi pi-user",
       command: () => navigate(PAGES.DASHBOARD.PROFILE),
     },
-    // {
-    // label: "Админка уровней",     // <--- вот здесь добавляем
-    // icon: "pi pi-cog",
-    // command: () => navigate("/ctf/admin"),
-    // },
     {
       label: "Выйти",
       icon: "pi pi-sign-out",
@@ -44,25 +61,6 @@ export const Header: FC = () => {
       },
     },
   ];
-
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      const auth = getAuth();
-      const user = auth.currentUser;
-      if (!user) return;
-
-      const userRef = doc(db, "users", user.uid);
-      const userSnap = await getDoc(userRef);
-
-      if (userSnap.exists()) {
-        const data = userSnap.data();
-        setUserName(`${data.lastName} ${data.firstName[0]}.`);
-        setPoints(data.points || 0);
-      }
-    };
-
-    fetchUserInfo();
-  }, []);
 
   return (
     <header className="root-header beautiful-shadow flex justify-content:space-between align-items:center bg:#566F9E padding:15|40">
@@ -80,19 +78,6 @@ export const Header: FC = () => {
       </OverlayPanel>
 
       <div className="flex align-items:center gap:25">
-        {/* <div
-          className="notifications-button flex justify-content:center align-items:center bg:#ffffff w:45 h:45 round cursor:pointer"
-          onClick={(e) => notificationsOverlayPanel.current?.toggle(e)}
-        >
-          <i className="pi pi-bell f:#566F9E f:18 p-overlay-badge">
-            <Badge
-              value="5"
-              severity="danger"
-              className="top:-3px right:-3px"
-            />
-          </i>
-        </div> это у нас иконка уведомлений, пока убрал так как не нужен*/}
-
         <Menu
           id="popup_avatar_menu"
           model={avatarMenuItems}
@@ -114,9 +99,9 @@ export const Header: FC = () => {
           />
 
           <div className="f:#ffffff f:bold">
-            {userName}
+            {loading ? "Загрузка..." : userName}
             <div className="f:14 f:normal mt:4">
-              ⭐ {points !== null ? `${points} очков` : "Загрузка..."}
+              ⭐ {loading ? "Загрузка..." : (points !== null ? `${points} очков` : "-")}
             </div>
           </div>
         </div>

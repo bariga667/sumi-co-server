@@ -1,20 +1,30 @@
+import { useState, useEffect, ReactNode } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { auth } from "./firebase";
+import { auth } from "./firebase"; // путь проверь сам!
 
-export function PrivateRoute({ children }: { children: JSX.Element }) {
-  const [user, setUser] = useState<User | null | undefined>(undefined);
+function PrivateRoute({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      console.log("onAuthStateChanged", firebaseUser);
+      setUser(firebaseUser);
+      setIsAuthChecked(true);
     });
-
-    return () => unsubscribe();
+    return unsubscribe;
   }, []);
 
-  if (user === undefined) return <div>Загрузка...</div>;
+  if (!isAuthChecked) {
+    return <div>Загрузка...</div>;
+  }
 
-  return user ? children : <Navigate to="/" />;
+  if (user) {
+    return <>{children}</>;
+  }
+
+  return <Navigate to="/login" />;
 }
+
+export default PrivateRoute;

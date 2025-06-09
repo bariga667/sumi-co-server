@@ -10,7 +10,7 @@ import "@master/css";
 
 import "./assets/scss/index.scss";
 import { PAGES } from "./constants/pages.ts";
-import { PrivateRoute } from "./PrivateRoute";
+import  PrivateRoute  from "./PrivateRoute";
 import CTFLevelPage from "./pages/CTFLevelPage";
 import CTFPage from "./pages/CTFPage";
 // import CTFAdminPage from "./pages/CTFAdminPage";
